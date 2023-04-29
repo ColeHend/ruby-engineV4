@@ -1,0 +1,17 @@
+{
+    "tilesetName": "CastleTownExterior",
+    "layers": 5,
+    "events": [
+        {
+            "name":"Event101",
+            "image": "ghost",
+            "x": 5,
+            "y": 5,
+            "bbHeight": 46,
+            "bbWidth": 32,
+            "activateType": "select",
+            "battleCoreName": "ghost",
+            "commands": []
+        }
+    ]
+}
