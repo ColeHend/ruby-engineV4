@@ -61,9 +61,9 @@ class Map_Base
       if @events.length > 0
         @events.each_with_index{|e,i| 
           e.update()
-          if e.stats.currentHP <= 0
-            @events.delete_at(i)
-          end
+          # if e.stats.currentHP <= 0
+          #   @events.delete_at(i)
+          # end
         }
       end
       # -------- effects -------
@@ -78,11 +78,11 @@ class Map_Base
 
     def draw()
         @frameNum += 1
+        @events.map do |e| e.name == "player" ? $scene_manager.scenes["player"] : e end
         Gosu.translate(-@camera_x, -@camera_y) do
             @theMapRecord.draw(0,0,0)
             #@playersDraw.call()
             puts(@events.length)
-            puts(@events)
             if @events.length > 0
                 @events.each {|e|
                   if $scene_manager.scenes["player"].y != nil && e.y != nil

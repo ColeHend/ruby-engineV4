@@ -5,8 +5,8 @@
         {
             "name":"Event101",
             "image": "ghost",
-            "x": 5,
-            "y": 5,
+            "x": 2,
+            "y": 2,
             "bbHeight": 46,
             "bbWidth": 32,
             "activateType": "select",

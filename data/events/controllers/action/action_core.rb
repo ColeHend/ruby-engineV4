@@ -52,15 +52,17 @@ class Action_Core
     end
 
     def check_range(tileNum)# returns Array<Array<["direction", theEvent, distance-away-number ]>
-        evtsInRange = Array.new
         tileW, tileH = 32, 32
+        tileNum = tileNum ? tileNum : 2
         tileDistW, tileDistH = tileNum*tileW, tileNum*tileH
         x, y = @actionObject.x, @actionObject.y
         toReturn = []
-        $scene_manager.currentMap.events.each do |event|
+        [*$scene_manager.currentMap.events,$scene_manager.scenes["player"]].uniq.each do |event|
             if event != self
+                puts("eventInRange?: #{event.x >= x - tileDistW && event.x <= x + tileDistW && event.y >= y - tileDistH && event.y <= y + tileDistH}")
                 if event.x >= x - tileDistW && event.x <= x + tileDistW && event.y >= y - tileDistH && event.y <= y + tileDistH
                     dist = Math.sqrt((event.x - x)**2 + (event.y - y)**2)
+                    puts(dist,tileDistW, dist <= tileDistW )
                     if dist <= tileDistW
                         if event.y < y
                             if event.x < x
@@ -90,11 +92,12 @@ class Action_Core
             end
             
         end
-        return evtsInRange
+        return toReturn
     end
 
     def update
         @evtsInRange = check_range(@range)
+        puts("evtsInRange: #{@evtsInRange.length}")
         actionNatureState()
     end
 

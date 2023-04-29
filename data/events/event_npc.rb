@@ -1,6 +1,6 @@
 
 class Event_NPC < Event_Base
-    attr_accessor :stats, :object
+    attr_accessor :stats
     attr_reader :moveType, :targetObject
     include Animate#number,name,x,y,activateType,imgName,bbHeight,bbWidth,facing,battleCoreName,commands
     def initialize(mapNumber,eventName,x,y,activateType,imgName,bbHeight,bbWidth,battleCoreName="ghost",facing="downStop",commands=[])

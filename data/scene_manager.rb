@@ -1,5 +1,5 @@
 class Scene_Manager
-    attr_accessor :screenWidth, :screenHeight, :scenes, :current_scene, :currentMap, :windowskin, :input, :maps, :npcNatures
+    attr_accessor :screenWidth, :screenHeight, :scenes, :currentMap, :windowskin, :input, :maps, :npcNatures
     def initialize(screenWidth=800,screenHeight=600)
         @numOfMaps = Dir[File.join(__dir__,'maps','mapData', '*.json')].count { |file| File.file?(file) }
         @numOfMaps = (@numOfMaps/2).floor()
