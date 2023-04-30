@@ -24,21 +24,23 @@ class Map_Base
         return @events.index(event)
     end
     
-    def detect_collision_side(event1, event2)
-      player_half_w = event1.object.w / 2
-      player_half_h = event1.object.h / 2
-      enemy_half_w = event2.object.w / 2
-      enemy_half_h = event2.object.h / 2
-      player_center_x = event1.object.x + event1.object.w / 2
-      player_center_y = event1.object.y + event1.object.h / 2
-      enemy_center_x = event2.object.x + event2.object.w / 2
-      enemy_center_y = event2.object.y + event2.object.h / 2
+    def detect_collision_side(event1, event2, obj=true)
+      event1Obj = obj ? event1.object : event1
+      event2Obj = obj ? event2.object : event2
+      player_half_w = event1Obj.w / 2
+      player_half_h = event1Obj.h / 2
+      enemy_half_w = event2Obj.w / 2
+      enemy_half_h = event2Obj.h / 2
+      player_center_x = event1Obj.x + event1Obj.w / 2
+      player_center_y = event1Obj.y + event1Obj.h / 2
+      enemy_center_x = event2Obj.x + event2Obj.w / 2
+      enemy_center_y = event2Obj.y + event2Obj.h / 2
     
       diff_x = player_center_x - enemy_center_x
       diff_y = player_center_y - enemy_center_y
       min_x_dist = player_half_w + enemy_half_w
       min_y_dist = player_half_h + enemy_half_h
-      
+
       if diff_x.abs < min_x_dist && diff_y.abs < min_y_dist
         d1 = 0
         collideDirections = []
@@ -62,15 +64,13 @@ class Map_Base
     
     def currentBlockedTiles()
         @blockedTiles = @mapTiles.impassableTiles
-        @events.each{|e|
-            if e.passible == false
-                @blockedTiles.push(e)
-            end
-        }
+        # @events.each{|e|
+        #     if e.passible == false
+        #         @blockedTiles.push(e)
+        #     end
+        # }
         return @blockedTiles
     end
-
-    
 
     def update
       # -------- player -------

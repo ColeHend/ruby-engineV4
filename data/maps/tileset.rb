@@ -10,7 +10,7 @@ class Tileset
 
     end
     def addImpass(x,y)
-        @impassableTiles.push(Block.new(x,y,30,24))
+        @impassableTiles.push(Block.new(x,y,30,30))
     end
     def isntPassable(tileNum)
         return @impassTileArr.include?(tileNum)

@@ -26,7 +26,21 @@ class Move_Controller
         currEvent = @eventName == "player" ? $scene_manager.scenes["player"] : $scene_manager.currentMap.events.find{|e| e.name == @eventName}
         
         if currEvent != nil
-            
+            $scene_manager.currentMap.currentBlockedTiles().each {|tile|
+                determineCollision = $scene_manager.currentMap.detect_collision_side(currEvent.object, tile, false)
+                if determineCollision && determineCollision.length > 0
+                    if direction == "up" && determineCollision.include?("down") 
+                        return false
+                    elsif direction == "down" && determineCollision.include?("up") 
+                        return false
+                    elsif direction == "left" && determineCollision.include?("right") 
+                        return false
+                    elsif direction == "right" && determineCollision.include?("left") 
+                        return false
+                    end
+                end
+            }
+
             $scene_manager.currentMap.events.each {|event|
                 determineCollision = $scene_manager.currentMap.detect_collision_side(currEvent, event)
                 if determineCollision && determineCollision.length > 0 
@@ -41,7 +55,6 @@ class Move_Controller
                     end
                 end
             }
-            return true
         end
 
         return true

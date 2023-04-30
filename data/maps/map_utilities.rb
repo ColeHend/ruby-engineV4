@@ -6,7 +6,7 @@ module Map_Utilities
               mapArrayX.each_with_index {|tile, xIndex|
                 for num in 0..(layers*0.5).ceil() do
                     if tile[num] != nil && tile[num] != "nil"
-                      mapTiles.add_impass(tile[num],xIndex,xIndex)
+                      mapTiles.add_impass(tile[num],xIndex,yIndex)
                       mapTiles.draw_tile(tile[num],xIndex,yIndex)
                     end
                 end
