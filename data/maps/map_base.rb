@@ -38,11 +38,8 @@ class Map_Base
       diff_y = player_center_y - enemy_center_y
       min_x_dist = player_half_w + enemy_half_w
       min_y_dist = player_half_h + enemy_half_h
-      # puts("diff_x: #{diff_x}\ndiff_y: #{diff_y}\nmin_x_dist: #{min_x_dist}\nmin_y_dist: #{min_y_dist}")
+      
       if diff_x.abs < min_x_dist && diff_y.abs < min_y_dist
-        depth_x = diff_x > 0 ? min_x_dist - diff_x : -min_x_dist - diff_x
-        depth_y = diff_y > 0 ? min_y_dist - diff_y : -min_y_dist - diff_y
-        # puts("depth_x: #{depth_x}\ndepth_y: #{depth_y}")
         d1 = 0
         collideDirections = []
         if diff_x.abs < min_x_dist && diff_y < d1
