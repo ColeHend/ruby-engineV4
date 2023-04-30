@@ -6,7 +6,7 @@ class Event_Base < CustObject
         # @object = CustObject.new(map, x, y, 32, 48, "sprites/#{img}")
         @vector = Vector.new(0, 0)
         @name = evtName
-        @passible = passible
+        @passable = passible
         @facing = "down"
     end
     # def x
@@ -30,7 +30,7 @@ class Event_Base < CustObject
     def update
     end
     def draw
-        if x() != nil && y() != nil
+        if @x != nil && @y != nil
             @object.draw
         end
     end

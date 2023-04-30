@@ -23,23 +23,46 @@ class Map_Base
     def get_event_num(event)
         return @events.index(event)
     end
-
-    def check_collision(event1num,event2num)
-      if event1num != nil && event2num != nil
-        event1 = @events[event1num]
-        event2 = @events[event2num]
-        if event1.passible == false && event2.passible == false
-          if event1.object.x + event1.object.w > event2.object.x && event1.object.x < event2.object.x + event2.object.w && event1.object.y + event1.object.h > event2.object.y && event1.object.y < event2.object.y + event2.object.h
-              return true
-          else
-              return false
-          end
-        else
-          return false
+    
+    def detect_collision_side(event1, event2)
+      player_half_w = event1.object.w / 2
+      player_half_h = event1.object.h / 2
+      enemy_half_w = event2.object.w / 2
+      enemy_half_h = event2.object.h / 2
+      player_center_x = event1.object.x + event1.object.w / 2
+      player_center_y = event1.object.y + event1.object.h / 2
+      enemy_center_x = event2.object.x + event2.object.w / 2
+      enemy_center_y = event2.object.y + event2.object.h / 2
+    
+      diff_x = player_center_x - enemy_center_x
+      diff_y = player_center_y - enemy_center_y
+      min_x_dist = player_half_w + enemy_half_w
+      min_y_dist = player_half_h + enemy_half_h
+      # puts("diff_x: #{diff_x}\ndiff_y: #{diff_y}\nmin_x_dist: #{min_x_dist}\nmin_y_dist: #{min_y_dist}")
+      if diff_x.abs < min_x_dist && diff_y.abs < min_y_dist
+        depth_x = diff_x > 0 ? min_x_dist - diff_x : -min_x_dist - diff_x
+        depth_y = diff_y > 0 ? min_y_dist - diff_y : -min_y_dist - diff_y
+        # puts("depth_x: #{depth_x}\ndepth_y: #{depth_y}")
+        d1 = 0
+        collideDirections = []
+        if diff_x.abs < min_x_dist && diff_y < d1
+          collideDirections.push("up")
         end
+        if diff_x.abs < min_x_dist && diff_y > d1
+          collideDirections.push("down")
+        end
+        if diff_y.abs < min_y_dist && diff_x < d1
+          collideDirections.push("left")
+        end
+        if diff_y.abs < min_y_dist && diff_x > d1
+          collideDirections.push("right")
+        end
+        return collideDirections.length > 0 ? collideDirections : []
+        
       end
-    end
 
+    end
+    
     def currentBlockedTiles()
         @blockedTiles = @mapTiles.impassableTiles
         @events.each{|e|
@@ -55,8 +78,8 @@ class Map_Base
     def update
       # -------- player -------
       $scene_manager.scenes["player"].update()
-      @camera_x = [[($scene_manager.scenes["player"].x) - $scene_manager.screenWidth / 2, 0].max, ((@w * 32) + 32) - $scene_manager.screenWidth].min
-      @camera_y = [[($scene_manager.scenes["player"].y) - $scene_manager.screenHeight / 2, 0].max, ((@h * 32) + 32) - $scene_manager.screenHeight].min
+      @camera_x = [[($scene_manager.scenes["player"].object.x) - $scene_manager.screenWidth / 2, 0].max, ((@w * 32) + 32) - $scene_manager.screenWidth].min
+      @camera_y = [[($scene_manager.scenes["player"].object.y) - $scene_manager.screenHeight / 2, 0].max, ((@h * 32) + 32) - $scene_manager.screenHeight].min
       # -------- events -------
       if @events.length > 0
         @events.each_with_index{|e,i| 
@@ -80,12 +103,11 @@ class Map_Base
         @frameNum += 1
         @events.map do |e| e.name == "player" ? $scene_manager.scenes["player"] : e end
         Gosu.translate(-@camera_x, -@camera_y) do
-            @theMapRecord.draw(0,0,0)
-            #@playersDraw.call()
-            puts(@events.length)
-            if @events.length > 0
-                @events.each {|e|
-                  if $scene_manager.scenes["player"].y != nil && e.y != nil
+          @theMapRecord.draw(0,0,0)
+          #@playersDraw.call()
+          if @events.length > 0
+            @events.each do |e|
+              if $scene_manager.scenes["player"].y != nil && e.y != nil
                     if $scene_manager.scenes["player"].y > e.y
                       e.draw()
                       $scene_manager.scenes["player"].draw
@@ -93,29 +115,22 @@ class Map_Base
                       $scene_manager.scenes["player"].draw
                       e.draw()
                     end
+                  
+              else
+                $scene_manager.scenes["player"].draw
+              end
+              @theMapRecordTop.draw(0,0,0)
+              if @runEffects.length > 0
+                @runEffects.each_with_index {|effect,index|
+                  if effect.dead
+                    @runEffects.delete_at(index)
+                  else
+                    effect.update
                   end
                 }
-            else
-                $scene_manager.scenes["player"].draw
+              end
             end
-            @theMapRecordTop.draw(0,0,0)
-            if @runEffects.length > 0
-              @runEffects.each_with_index {|effect,index|
-                  if effect.dead
-                      @runEffects.delete_at(index)
-                  else
-                      effect.update
-                  end
-              }
           end
         end
-    end
-
-    def move_camera(x,y)
-        @map.move_camera(x,y)
-    end
-
-    def set_camera(x,y)
-        @map.set_camera(x,y)
-    end
-end
+      end
+  end

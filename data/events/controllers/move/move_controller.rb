@@ -1,100 +1,114 @@
 class Move_Controller
     include Animate
-
     def initialize(object,facing,sprite,eventName,npcActionState=nil)
         @object = object
         @facing = facing
-        # @sprite = sprite
         @speed = 0.75
         @animationTime = 7
         @state = "stop"
         @input = $scene_manager.input
         @eventName = eventName
-        @npcActionState = npcActionState
-        # @nonPlayerFunc = nonPlayerFunc
+        @npcActionState = npcActionState ? npcActionState : "stop"
     end
+
     def setMoveState()
         case @state
         when "moving"
-            # puts("_| #{@eventName} |_ state: #{@state}\n facing: #{@facing}\n speed: #{@speed}\n animationTime: #{@animationTime} \n objectX: #{@object.x} \n objectY: #{@object.y}")
-            # @sprite.draw()
             draw_character(@object, @facing ,@animationTime)
         when "stop"
-            # @sprite.draw()
             draw_character(@object,"#{@facing}Stop",1)
+        else 
+            draw_character(@object,"downStop",1)
         end
     end
-    def isColliding()
-        collideResult = []
-        thisEventNum = $scene_manager.currentMap.get_event_num($scene_manager.currentMap.events.each {|e| if e.name == @eventName then return e end})
-        $scene_manager.currentMap.events.each {|e|
-            if e.name != @eventName
-                evNum = $scene_manager.currentMap.get_event_num(e)
-                $scene_manager.currentMap.check_collision(evNum,thisEventNum)
-                
-            end
-        }
-        return collideResult.include?(true)
+
+    def check_clear_path(direction) #can execute a move or not
+        currEvent = @eventName == "player" ? $scene_manager.scenes["player"] : $scene_manager.currentMap.events.find{|e| e.name == @eventName}
+        
+        if currEvent != nil
+            
+            $scene_manager.currentMap.events.each {|event|
+                determineCollision = $scene_manager.currentMap.detect_collision_side(currEvent, event)
+                if determineCollision && determineCollision.length > 0 
+                    if direction == "up" && determineCollision.include?("down") 
+                        return false
+                    elsif direction == "down" && determineCollision.include?("up") 
+                        return false
+                    elsif direction == "left" && determineCollision.include?("right") 
+                        return false
+                    elsif direction == "right" && determineCollision.include?("left") 
+                        return false
+                    end
+                end
+            }
+            return true
+        end
+
+        return true
     end
+
     def move_input()
-        isColliding = isColliding()
         if Gosu.button_down?(InputTrigger::RUN) 
-            @speed = 1.25
+            @speed = 2
             @animationTime = 5
         elsif Gosu.button_down?(InputTrigger::SNEAK)
-            @speed = 0.25
+            @speed = 0.5
             @animationTime = 10
         else
-            @speed = 0.75
+            @speed = 1
             @animationTime = 7
         end
-        if isColliding == false
-            if @input.keyDown(InputTrigger::UP)
-                @facing = "up"
-                @state = "moving"
-                move()
-            elsif @input.keyDown(InputTrigger::DOWN)
-                @facing = "down"
-                @state = "moving"
-                move()
-            elsif @input.keyDown(InputTrigger::LEFT)
-                @facing = "left"
-                @state = "moving"
-                move()
-            elsif @input.keyDown(InputTrigger::RIGHT)
-                @facing = "right"
-                @state = "moving"
+        
+        upcheck = $scene_manager.scenes["player"].object.y > 0
+        downcheck = $scene_manager.scenes["player"].object.y < (($scene_manager.currentMap.h-1)*32)
+        leftcheck = $scene_manager.scenes["player"].object.x > 0
+        rightcheck = $scene_manager.scenes["player"].object.x < (($scene_manager.currentMap.w-1)*32)
+
+        if @input.keyDown(InputTrigger::UP)
+            @facing = "up"
+            @state = "moving"
+            if check_clear_path("up") && upcheck
                 move()
             end
-        else
-            move(true)
-            if @input.keyDown(InputTrigger::UP)
-                @facing = "up"
-                @state = "stop"
-            elsif @input.keyDown(InputTrigger::DOWN)
+        elsif @input.keyDown(InputTrigger::DOWN)
                 @facing = "down"
-                @state = "stop"
-            elsif @input.keyDown(InputTrigger::LEFT)
+                @state = "moving"
+            if check_clear_path("down") && downcheck
+                move()
+            end
+        elsif @input.keyDown(InputTrigger::LEFT)
                 @facing = "left"
-                @state = "stop"
-            elsif @input.keyDown(InputTrigger::RIGHT)
+                @state = "moving"
+            if check_clear_path("left") && leftcheck
+                move()
+            end
+        elsif @input.keyDown(InputTrigger::RIGHT)
                 @facing = "right"
-                @state = "stop"
+                @state = "moving"
+            if check_clear_path("right") && rightcheck
+                move()
             end
         end
+        
+            
         if @input.keyDown(InputTrigger::ESCAPE)
             @input.addToStack("menu")
             $scene_manager.switch_scene("menu")
         elsif @input.keyReleased(InputTrigger::UP)
             @state = "stop"
+            move(true)
         elsif @input.keyReleased(InputTrigger::DOWN)
             @state = "stop"
+            move(true)
         elsif @input.keyReleased(InputTrigger::LEFT)
             @state = "stop"
+            move(true)
         elsif @input.keyReleased(InputTrigger::RIGHT)
             @state = "stop"
+            move(true)
         end
     end
+
     def npc_input(actionState="stop")
         case actionState
         when "stop"
@@ -104,6 +118,7 @@ class Move_Controller
             @state = "moving"
         end
     end
+
     def move(stop = false)
         vector = Vector.new(0, 0)
         vector.x = 0
@@ -126,8 +141,9 @@ class Move_Controller
         @object.x += vector.x
         @object.y += vector.y
     end
+
     def update
-        if @npcActionState != nil
+        if @eventName != "player"
             npc_input(@npcActionState)
         else
             move_input()

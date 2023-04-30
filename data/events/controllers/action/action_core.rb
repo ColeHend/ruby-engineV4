@@ -59,10 +59,10 @@ class Action_Core
         toReturn = []
         [*$scene_manager.currentMap.events,$scene_manager.scenes["player"]].uniq.each do |event|
             if event != self
-                puts("eventInRange?: #{event.x >= x - tileDistW && event.x <= x + tileDistW && event.y >= y - tileDistH && event.y <= y + tileDistH}")
+                # puts("eventInRange?: #{event.x >= x - tileDistW && event.x <= x + tileDistW && event.y >= y - tileDistH && event.y <= y + tileDistH}")
                 if event.x >= x - tileDistW && event.x <= x + tileDistW && event.y >= y - tileDistH && event.y <= y + tileDistH
                     dist = Math.sqrt((event.x - x)**2 + (event.y - y)**2)
-                    puts(dist,tileDistW, dist <= tileDistW )
+                    # puts(dist,tileDistW, dist <= tileDistW )
                     if dist <= tileDistW
                         if event.y < y
                             if event.x < x
@@ -97,7 +97,7 @@ class Action_Core
 
     def update
         @evtsInRange = check_range(@range)
-        puts("evtsInRange: #{@evtsInRange.length}")
+        # puts("evtsInRange: #{@evtsInRange.length}")
         actionNatureState()
     end
 

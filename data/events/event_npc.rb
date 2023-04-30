@@ -38,13 +38,12 @@ class Event_NPC < Event_Base
     def update
         super
         @actionController.update()
-        # makes sure the @moveType is set right in the @moveController
-        #@moveController.update_move(self)
         @moveController.update()
         # creates a path for the npc to move to
     end
 
     def draw
+        super
         # executes the move path for the npc
         @moveController.draw()
         @actionController.draw()
