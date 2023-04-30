@@ -64,9 +64,9 @@ class Move_Controller
         if Gosu.button_down?(InputTrigger::RUN) 
             @speed = 2
             @animationTime = 5
-        elsif Gosu.button_down?(InputTrigger::SNEAK)
-            @speed = 0.5
-            @animationTime = 10
+        # elsif Gosu.button_down?(InputTrigger::SNEAK)
+        #     @speed = 0.5
+        #     @animationTime = 10
         else
             @speed = 1
             @animationTime = 7

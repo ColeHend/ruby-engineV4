@@ -41,19 +41,19 @@ class Map_Base
       min_x_dist = player_half_w + enemy_half_w
       min_y_dist = player_half_h + enemy_half_h
 
-      if diff_x.abs < min_x_dist && diff_y.abs < min_y_dist
-        d1 = 0
+      if diff_x.abs < min_x_dist && diff_y.abs < min_x_dist # min_y_dist
+        d1, d2, d3 = 0, 0.9, 0.9
         collideDirections = []
-        if diff_x.abs < min_x_dist && diff_y < d1
+        if diff_x.abs < (min_x_dist * d2) && diff_y < d1
           collideDirections.push("up")
         end
-        if diff_x.abs < min_x_dist && diff_y > d1
+        if diff_x.abs < (min_x_dist * d2) && diff_y > d1
           collideDirections.push("down")
         end
-        if diff_y.abs < min_y_dist && diff_x < d1
+        if diff_y.abs < (min_x_dist * d3) && diff_x < d1
           collideDirections.push("left")
         end
-        if diff_y.abs < min_y_dist && diff_x > d1
+        if diff_y.abs < (min_x_dist * d3) && diff_x > d1
           collideDirections.push("right")
         end
         return collideDirections.length > 0 ? collideDirections : []
