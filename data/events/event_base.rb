@@ -15,17 +15,18 @@ class Event_Base < CustObject
     # def y
     #     return @object.y
     # end
-    def facing
-        return @facing
-    end
     def object
-        return @object
+        @object
     end
     def vector
-        return @vector
+        @vector
+    end
+    def vector(x,y)
+        @vector.x = x
+        @vector.y = y
     end
     def passible
-        return @passible
+        @passible
     end
     def update
     end

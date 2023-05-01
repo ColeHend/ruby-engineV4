@@ -23,7 +23,16 @@ class Map_Base
     def get_event_num(event)
         return @events.index(event)
     end
-    
+
+    def get_event_by_name(name)
+      @events.each do |event|
+          if event.name == name
+              return event
+          end
+      end
+      return nil
+    end
+
     def detect_collision_side(event1, event2, obj=true)
       event1Obj = obj ? event1.object : event1
       event2Obj = obj ? event2.object : event2
@@ -64,11 +73,11 @@ class Map_Base
     
     def currentBlockedTiles()
         @blockedTiles = @mapTiles.impassableTiles
-        # @events.each{|e|
-        #     if e.passible == false
-        #         @blockedTiles.push(e)
-        #     end
-        # }
+        @events.each{|e|
+            if e.passible == false
+                @blockedTiles.push(e)
+            end
+        }
         return @blockedTiles
     end
 
@@ -98,23 +107,24 @@ class Map_Base
 
     def draw()
         @frameNum += 1
-        @events.map do |e| e.name == "player" ? $scene_manager.scenes["player"] : e end
+        player = $scene_manager.scenes["player"]
+        @events.map do |e| e.name == "player" ? player : e end
         Gosu.translate(-@camera_x, -@camera_y) do
           @theMapRecord.draw(0,0,0)
           #@playersDraw.call()
           if @events.length > 0
             @events.each do |e|
-              if $scene_manager.scenes["player"].y != nil && e.y != nil
-                    if $scene_manager.scenes["player"].y > e.y
+              if player.object.y != nil && e.object.y != nil
+                    if player.object.y > e.object.y
                       e.draw()
-                      $scene_manager.scenes["player"].draw
-                    elsif $scene_manager.scenes["player"].y <= e.y
-                      $scene_manager.scenes["player"].draw
+                      player.draw
+                    elsif player.object.y <= e.object.y
+                      player.draw
                       e.draw()
                     end
                   
               else
-                $scene_manager.scenes["player"].draw
+                player.draw
               end
               @theMapRecordTop.draw(0,0,0)
               if @runEffects.length > 0

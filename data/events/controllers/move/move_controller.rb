@@ -2,28 +2,39 @@ class Move_Controller
     include Animate
     def initialize(object,facing,sprite,eventName,npcActionState=nil)
         @object = object
-        @facing = facing
+        @eventName = eventName
+        getEvent = $scene_manager.currentMap.get_event_by_name(@eventName)
+        @facing = getEvent ? getEvent.facing : facing
         @speed = 0.75
         @animationTime = 7
         @state = "stop"
         @input = $scene_manager.input
-        @eventName = eventName
-        @npcActionState = npcActionState ? npcActionState : "stop"
+        @npcActionState = getEvent ? getEvent.moveState : "stop"
     end
 
     def setMoveState()
-        case @state
-        when "moving"
+        state = @eventName != "player" ? @npcActionState : @state
+        if @eventName != "player"
+            getEvent = $scene_manager.currentMap.get_event_by_name(@eventName)
+            state = getEvent ? getEvent.moveState.strip : state
+            @facing = getEvent ? getEvent.facing : @facing
+            @object = getEvent ? getEvent.object : @object
+        end
+        case state
+        when "moving" 
             draw_character(@object, @facing ,@animationTime)
+        when "move"
+            draw_character(@object,@facing ,@animationTime)
         when "stop"
             draw_character(@object,"#{@facing}Stop",1)
         else 
+            puts("Error: #{state} is not a valid move state")
             draw_character(@object,"downStop",1)
         end
     end
 
     def check_clear_path(direction) #can execute a move or not
-        currEvent = @eventName == "player" ? $scene_manager.scenes["player"] : $scene_manager.currentMap.events.find{|e| e.name == @eventName}
+        currEvent = @eventName == "player" ? $scene_manager.scenes["player"] : $scene_manager.currentMap.get_event_by_name(@eventName)
         
         if currEvent != nil
             $scene_manager.currentMap.currentBlockedTiles().each {|tile|
@@ -122,16 +133,6 @@ class Move_Controller
         end
     end
 
-    def npc_input(actionState="stop")
-        case actionState
-        when "stop"
-            @state = "stop"
-
-        when "move"
-            @state = "moving"
-        end
-    end
-
     def move(stop = false)
         vector = Vector.new(0, 0)
         vector.x = 0
@@ -157,7 +158,6 @@ class Move_Controller
 
     def update
         if @eventName != "player"
-            npc_input(@npcActionState)
         else
             move_input()
         end

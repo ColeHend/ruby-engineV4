@@ -4,6 +4,7 @@ class Scene_Map
         @allMaps = Map_Loader.new(numOfMaps).maps
         puts("@allMaps.length: #{@allMaps.length}, numofMaps: #{numOfMaps}")
         @currentMap = @allMaps[0]
+        
         @mWidth = @currentMap.w || 0
         @mHeight = @currentMap.h  || 0
         

@@ -65,10 +65,10 @@ class AStar
             @nodes[x][y].blocked = true
           end
         end
-      
         # Set the g_cost and h_cost for the start node.
         @start.g_cost = 0
         @start.h_cost = AStar.heuristic_cost_estimate(@start, @goal)
+        # puts("g_cost: #{@start.g_cost}\nh_cost: #{@start.h_cost}")
       end
       
   
@@ -81,7 +81,7 @@ class AStar
       #---------------------------------------------------------
       def get_neighbors(current_node)
         neighbors = []
-      
+        # puts("current_node: #{current_node.x},#{current_node.y}")
         # We check the nodes to the north, south, east, and west of the current node.
         # If the node is within the bounds of the grid and is walkable, we add it to
         # the list of neighbors.
@@ -157,7 +157,7 @@ class AStar
           path.unshift(current_node)
           return path
         end
-    
+        # puts("path, #{path}")
         # If we have not reached the goal, we expand the current node by adding its
         # neighbors to the open list.
         neighbors = grid.get_neighbors(current_node)
@@ -196,27 +196,31 @@ class AStar
   
     def self.new_path(start,goal)
       newNode = ->(loc){
-        return Node.new(loc[0], loc[1], 0, 0, nil)
+        return Node.new(loc[0]/32, loc[1]/32, 0, 0, nil)
       }
       map = $scene_manager.currentMap
       blockedSpots = []
-      blockedTiles = $scene_manager.currentMap.blockedTiles
+      blockedTiles = [*$scene_manager.currentMap.currentBlockedTiles()]
       blockedTiles.uniq()
+      # puts("blockedTilesLength: #{blockedTiles.length}")
       blockedTiles.each{|tile|
         if tile.is_a?(Event_NPC) or tile.is_a?(Event_Player)
           theX, theY = tile.x/32, tile.y/32
         else
-          theX, theY = tile.x, tile.y  
+          theX, theY = tile.x/32, tile.y/32  
         end
         blockedSpots.push([theX.to_i,theY.to_i])
       }
+
       if goal[0] != 0
         goal[0] -= 1
       else
         goal[0] += 1
       end
+      # puts("GRID: w: #{map.w}, h: #{map.h} startx: #{start[0]/32}, starty: #{start[1]/32} goalx: #{goal[0]/32}, goaly: #{goal[1]/32}")
       grid = Grid.new(map.w, map.h, newNode.call(start), newNode.call(goal), blockedSpots)
       path = self.find_path(grid)
+      # puts("path: #{path}")
       currPath = []
       if path != nil
         path.each{|node|

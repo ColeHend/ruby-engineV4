@@ -5,13 +5,20 @@
         {
             "name":"Event101",
             "image": "ghost",
-            "x": 2,
-            "y": 2,
+            "x": 20,
+            "y": 10,
             "bbHeight": 46,
             "bbWidth": 32,
             "activateType": "select",
             "battleCoreName": "ghost",
-            "commands": []
+            "commands": [],
+            "behavior": {
+                "nature": "evil",
+                "groupName": "evil_minions",
+                "priority": ["self"],
+                "moveType": "none",
+                "detectRange": 7
+            }
         }
     ]
 }

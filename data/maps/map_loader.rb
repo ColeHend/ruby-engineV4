@@ -13,6 +13,7 @@ class Map_Loader
             mapInfo = JSON.parse(File.read(File.expand_path("./data/maps/mapData/map_#{number}.json")))
             mapTiles = JSON.parse(File.read(File.expand_path("./data/maps/mapData/map_#{number}_tiles.json")))
             theMap = Map_Template.new(mapInfo['tilesetName'],mapTiles,mapInfo["layers"])
+            $scene_manager.currentMap = theMap
             if mapInfo["events"].length > 0
                 for i in 0..mapInfo["events"].length - 1
                     theEvent = mapInfo["events"][i]
