@@ -27,7 +27,9 @@ class Map_Loader
                     battleCoreName = theEvent["battleCoreName"] ? theEvent["battleCoreName"] : "ghost"
                     facing = theEvent["facing"] ? theEvent["facing"] : "downStop"
                     commands = theEvent["commands"] ? theEvent["commands"] : []
-                    theMap.add_event(Event_NPC.new(number,name,x,y,activateType,imgName,bbHeight,bbWidth,battleCoreName,facing,commands))
+                    behavior = theEvent["behavior"] ? theEvent["behavior"] : nil
+                    eventConfig = {}
+                    theMap.add_event(Event_NPC.new(number,name,x,y,activateType,imgName,bbHeight,bbWidth,battleCoreName,facing,commands,behavior))
                 end
             end
             return theMap

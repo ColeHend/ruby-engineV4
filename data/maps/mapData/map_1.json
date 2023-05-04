@@ -13,6 +13,14 @@
             "battleCoreName": "ghost",
             "commands": [],
             "behavior": {
+                "stats":{
+                    "hp": 10,
+                    "atk": 10,
+                    "sAtk": 10,
+                    "def": 10,
+                    "sDef": 10,
+                    "speed": 1
+                },
                 "nature": "evil",
                 "groupName": "evil_minions",
                 "priority": ["self"],

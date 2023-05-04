@@ -4,8 +4,8 @@ class Move_Controller
         @object = object
         @eventName = eventName
         getEvent = $scene_manager.currentMap.get_event_by_name(@eventName)
-        @facing = getEvent ? getEvent.facing : facing
-        @speed = 0.75
+        @facing = @eventName != "player" && getEvent ? getEvent.facing : facing
+        @speed = 1
         @animationTime = 7
         @state = "stop"
         @input = $scene_manager.input

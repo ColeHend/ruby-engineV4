@@ -29,7 +29,7 @@ class Action_Core
 
         if @move_dir_array.length == 0
             move_event(false)
-            potentialTargets = get_target_priorities(@priority)
+            potentialTargets = @priority.length == 1 ? get_target_priorities(@priority[0]) : get_target_priorities(@priority[0],@priority[1])
             if potentialTargets.length > 0
                 @move_dir_array = @moveBuilder.buildPathToObject(potentialTargets[0])
             end
@@ -38,8 +38,12 @@ class Action_Core
             downcheck = getEvent.object.y < (($scene_manager.currentMap.h-1)*32)
             leftcheck = getEvent.object.x > 1
             rightcheck = getEvent.object.x < (($scene_manager.currentMap.w-1)*32)
-            facingCheck = @moveController.check_clear_path(getEvent.facing)
-
+            facingCheck = @moveController.check_clear_path(@move_dir_array[0])
+            puts("facingCheck: #{facingCheck}")
+            puts("upcheck: #{upcheck}")
+            puts("downcheck: #{downcheck}")
+            puts("leftcheck: #{leftcheck}")
+            puts("rightcheck: #{rightcheck}")
             if getEvent.facing == 'up'
                 move_event(upcheck == true && facingCheck == true)
             elsif getEvent.facing == 'down'
@@ -71,6 +75,7 @@ class Action_Core
     end
 
     def get_target_priorities(natureFocus="self",sortByXY=false)
+        puts("natureFocus: #{natureFocus}")
         if natureFocus == "self" && sortByXY == false
             return sort_objects_by_distance(check_nature_targets(), @actionObject.x, @actionObject.y)
         elsif natureFocus == "player" && sortByXY == false

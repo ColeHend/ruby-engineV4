@@ -78,13 +78,13 @@ class Star_Movement
     end
 
     def update
-        if @moveArray.length > 0
-            @moveArray[0].call()
-            @moveCenter.move()
-            @moveArray.delete_at(0)
-        else
-            @moveCenter.move(true)
-        end
+        # if @moveArray.length > 0
+        #     @moveArray[0].call()
+        #     @moveCenter.move()
+        #     @moveArray.delete_at(0)
+        # else
+        #     @moveCenter.move(true)
+        # end
     end
     def draw
     end
